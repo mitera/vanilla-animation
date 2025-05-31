@@ -1,5 +1,5 @@
 /**
- * vanilla-animation v0.0.4 by @mitera
+ * vanilla-animation v0.0.5 by @mitera
  * Simone Miterangelis <simone@mite.it>
  * License: MIT
  */
@@ -12,6 +12,7 @@ interface VanillaAnimationSettings {
     mobile: boolean;
     live: boolean;
     scrollContainer: string | null;
+    callback: any
 }
 
 class VanillaAnimation {
@@ -30,7 +31,8 @@ class VanillaAnimation {
             offset: 0,
             mobile: true,
             live: true,
-            scrollContainer: null
+            scrollContainer: null,
+            callback: null
         }
 
         this.settings = {...default_settings, ...settings} as VanillaAnimationSettings;
@@ -154,10 +156,11 @@ class VanillaAnimation {
     }
 
     /**
-     * Executes an animation on the specified HTML element by adding appropriate classes and setting its visibility.
+     * Triggers an animation on the given HTML element by applying relevant CSS classes and styles.
      *
-     * @param {HTMLElement} item - The HTML element on which the animation should be applied.
-     * @return {void} This method does not return a value.
+     * @param {HTMLElement} item The element on which the animation should be performed.
+     * The function reads dataset properties and computed styles to configure the animation.
+     * @return {undefined} This method does not return any value.
      */
     private doAnimation(item: HTMLElement) {
         let animationName = item.dataset.vanimation ? item.dataset.vanimation : 'none'
@@ -176,6 +179,31 @@ class VanillaAnimation {
         if (iteration) {
             item.style.setProperty('animation-iteration-count', delay);
         }
+        let intDuration = this.parseDuration(duration);
+        let intDelay = this.parseDuration(duration);
+        let totalDuration = intDuration + intDelay;
+        setTimeout(() => {
+            this.settings.callback(item);
+        }, totalDuration);
+    }
+
+    /**
+     * Parses a duration string and converts it to a number.
+     * The method supports strings ending in 'ms' (milliseconds) or 's' (seconds).
+     * If the string ends in 'ms', the numeric value is returned as-is.
+     * If the string ends in 's', the numeric value is returned after removing the 's' suffix.
+     * If the input is invalid or empty, the method returns 0.
+     *
+     * @param {string} duration - The duration string to parse. It should contain a number followed by 'ms' or 's'.
+     * @return {number} The numeric value of the duration, interpreted as milliseconds if 'ms' is present, or as an integer value otherwise.
+     */
+    protected parseDuration(duration: string) {
+        if (!duration) return 0;
+        if (duration.indexOf('ms') > -1) {
+            return parseInt(duration.replace('ms', ''));
+        }
+        let intDuration = parseInt(duration.replace('s', ''));
+        return intDuration;
     }
 
     /**

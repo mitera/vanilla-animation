@@ -1,3 +1,10 @@
+<a name="0.0.5"></a>
+# 0.0.5 (2025-05-31)
+
+### release summary
+
+- Add callback support to trigger custom actions after animations. Refactor animation handling and update version, documentation, and changelog.
+
 <a name="0.0.4"></a>
 # 0.0.4 (2025-05-31)
 

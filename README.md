@@ -89,7 +89,8 @@ The default `options` are:
         offset: 0,
         mobile: true,
         live: true,
-        scrollContainer: null
+        scrollContainer: null,
+        callback: null
     }
 
 Where:
@@ -101,6 +102,7 @@ Where:
 - `mobile` is `true` or `false` to enable mobile detection
 - `live` is `true` or `false` to enable live detection
 - `scrollContainer` is an optional element to use instead of the window
+- `callback` is a callback function that is called when the animation is completed
 
 ### Data API
 

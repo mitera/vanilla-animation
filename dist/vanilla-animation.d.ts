@@ -1,5 +1,5 @@
 /**
- * vanilla-animation v0.0.4 by @mitera
+ * vanilla-animation v0.0.5 by @mitera
  * Simone Miterangelis <simone@mite.it>
  * License: MIT
  */
@@ -11,6 +11,7 @@ interface VanillaAnimationSettings {
     mobile: boolean;
     live: boolean;
     scrollContainer: string | null;
+    callback: any;
 }
 declare class VanillaAnimation {
     private items;
@@ -53,12 +54,24 @@ declare class VanillaAnimation {
      */
     protected intertsectionObserve(): IntersectionObserver;
     /**
-     * Executes an animation on the specified HTML element by adding appropriate classes and setting its visibility.
+     * Triggers an animation on the given HTML element by applying relevant CSS classes and styles.
      *
-     * @param {HTMLElement} item - The HTML element on which the animation should be applied.
-     * @return {void} This method does not return a value.
+     * @param {HTMLElement} item The element on which the animation should be performed.
+     * The function reads dataset properties and computed styles to configure the animation.
+     * @return {undefined} This method does not return any value.
      */
     private doAnimation;
+    /**
+     * Parses a duration string and converts it to a number.
+     * The method supports strings ending in 'ms' (milliseconds) or 's' (seconds).
+     * If the string ends in 'ms', the numeric value is returned as-is.
+     * If the string ends in 's', the numeric value is returned after removing the 's' suffix.
+     * If the input is invalid or empty, the method returns 0.
+     *
+     * @param {string} duration - The duration string to parse. It should contain a number followed by 'ms' or 's'.
+     * @return {number} The numeric value of the duration, interpreted as milliseconds if 'ms' is present, or as an integer value otherwise.
+     */
+    protected parseDuration(duration: string): number;
     /**
      * Observes mutations in the DOM to detect added nodes that match specified criteria.
      * If a newly added node matches the required class, it resets the item and observes it
