@@ -1,6 +1,6 @@
 "use strict";
 /**
- * vanilla-animation v0.0.3 by @mitera
+ * vanilla-animation v0.0.4 by @mitera
  * Simone Miterangelis <simone@mite.it>
  * License: MIT
  */
@@ -139,6 +139,18 @@ class VanillaAnimation {
         item.classList.add(animationName);
         item.classList.add(this.settings.animateClass);
         item.style.visibility = 'visible';
+        let duration = item.dataset.vanimationDuration ? item.dataset.vanimationDuration : window.getComputedStyle(item).getPropertyValue('animation-duration');
+        if (duration) {
+            item.style.setProperty('animation-duration', duration);
+        }
+        let delay = item.dataset.vanimationDelay ? item.dataset.vanimationDelay : window.getComputedStyle(item).getPropertyValue('animation-delay');
+        if (delay) {
+            item.style.setProperty('animation-delay', delay);
+        }
+        let iteration = item.dataset.vanimationIteration ? item.dataset.vanimationIteration : window.getComputedStyle(item).getPropertyValue('animation-iteration-count');
+        if (iteration) {
+            item.style.setProperty('animation-iteration-count', delay);
+        }
     }
     /**
      * Observes mutations in the DOM to detect added nodes that match specified criteria.
