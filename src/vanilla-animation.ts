@@ -7,7 +7,7 @@ export default class VanillaAnimation {
     private settings: VanillaAnimationSettings;
     private container: HTMLElement;
 
-    constructor(settings: VanillaAnimationSettings) {
+    constructor(settings?: VanillaAnimationSettings) {
 
         let default_settings: VanillaAnimationSettings = {
             boxClass: 'vanimation',

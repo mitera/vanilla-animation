@@ -1,4 +1,11 @@
-<a name="1.0.0"></a>
+<a name="1.0.2"></a>
+# 1.0.2 (2025-05-31)
+
+### release summary
+
+- Add optional `settings` parameter to constructor. Update version, metadata, and changelog for release.
+
+<a name="1.0.1"></a>
 # 1.0.1 (2025-05-31)
 
 ### release summary

@@ -4,7 +4,7 @@ export default class VanillaAnimation {
     private offsetItems;
     private settings;
     private container;
-    constructor(settings: VanillaAnimationSettings);
+    constructor(settings?: VanillaAnimationSettings);
     /**
      * Initializes the scroll event listener to trigger animations on elements.
      * This method sets up an event listener on the window object to monitor the scroll position
