@@ -1,3 +1,10 @@
+<a name="1.0.0"></a>
+# 1.0.0 (2025-05-31)
+
+### release summary
+
+- Major version update with callback validation improvements, changelog addition, and updated metadata across files.
+
 <a name="0.0.6"></a>
 # 0.0.6 (2025-05-31)
 

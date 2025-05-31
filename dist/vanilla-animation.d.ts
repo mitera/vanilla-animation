@@ -1,5 +1,5 @@
 /**
- * vanilla-animation v0.0.6 by @mitera
+ * vanilla-animation v1.0.0 by @mitera
  * Simone Miterangelis <simone@mite.it>
  * License: MIT
  */

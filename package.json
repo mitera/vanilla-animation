@@ -1,6 +1,6 @@
 {
   "name": "vanilla-animation",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "license": "MIT",
   "author": "Simone Miterangelis <simone@mite.it>",
   "description": "a super light vanilla animation scroll down",
@@ -14,7 +14,8 @@
     "animation",
     "scroll down",
     "vanilla",
-    "super light"
+    "super light",
+    "vanimation"
   ],
   "bugs": {
     "url": "https://github.com/mitera/vanilla-animation/issues"

@@ -1,6 +1,6 @@
 "use strict";
 /**
- * vanilla-animation v0.0.5 by @mitera
+ * vanilla-animation v1.0.0 by @mitera
  * Simone Miterangelis <simone@mite.it>
  * License: MIT
  */
@@ -153,12 +153,14 @@ class VanillaAnimation {
         if (iteration) {
             item.style.setProperty('animation-iteration-count', delay);
         }
-        let intDuration = this.parseDuration(duration);
-        let intDelay = this.parseDuration(duration);
-        let totalDuration = intDuration + intDelay;
-        setTimeout(() => {
-            this.settings.callback(item);
-        }, totalDuration);
+        if (this.settings.callback) {
+            let intDuration = this.parseDuration(duration);
+            let intDelay = this.parseDuration(duration);
+            let totalDuration = intDuration + intDelay;
+            setTimeout(() => {
+                this.settings.callback(item);
+            }, totalDuration);
+        }
     }
     /**
      * Parses a duration string and converts it to a number.
