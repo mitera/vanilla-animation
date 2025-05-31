@@ -58,18 +58,18 @@ Add script right before closing `</body>` tag, and initialize AOS:
 
 Set animation add `vanimation` on `class` attribute and css animation on `data-vanimation` or directly on `class` attribute:
 
-    <div data-vanimation="animate__lightSpeedIn" class="vanimation">
+    <div data-vanimation="animate__fadeIn" class="vanimation">
         test1
     </div>
 
-    <div class="vanimation animate__lightSpeedIn">
+    <div class="vanimation animate__fadeIn">
         test2
     </div>
 
 And adjust behaviour by using `data-vanimation-*` attributes:
 
     <div class="vanimation"
-        data-vanimation="animate__lightSpeedIn"
+        data-vanimation="animate__fadeIn"
         data-vanimation-offset="200"
         data-vanimation-delay="50"
         data-vanimation-duration="1000"
@@ -112,7 +112,7 @@ Where:
   ```
 ### Data API
 
-- `data-vanimation="animate__lightSpeedIn"` is the animation class name
+- `data-vanimation="animate__fadeIn"` is the animation class name
 - `data-vanimation-offset="200"` is the offset in pixels from the bottom of the viewport when the animation should start
 - `data-vanimation-delay="0.5s"` is animation delay time is seconds or milliseconds
 - `data-vanimation-duration="500ms"` is animation duration time is seconds or milliseconds

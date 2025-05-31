@@ -1,4 +1,11 @@
 <a name="1.0.0"></a>
+# 1.0.1 (2025-05-31)
+
+### release summary
+
+- Migrate to Rollup for bundling. Update metadata, add UMD build, and improve minified files. Adjust changelog for release.
+
+<a name="1.0.0"></a>
 # 1.0.0 (2025-05-31)
 
 ### release summary

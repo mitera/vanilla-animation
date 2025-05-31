@@ -1,21 +1,6 @@
-/**
- * vanilla-animation v1.0.0 by @mitera
- * Simone Miterangelis <simone@mite.it>
- * License: MIT
- */
+import {VanillaAnimationSettings} from "./types";
 
-interface VanillaAnimationSettings {
-    boxClass: string;
-    animatePrefix: string;
-    animateClass: string;
-    offset: number;
-    mobile: boolean;
-    live: boolean;
-    scrollContainer: string | null;
-    callback: any
-}
-
-class VanillaAnimation {
+export default class VanillaAnimation {
 
     private items: HTMLElement[];
     private offsetItems: HTMLElement[] = []
