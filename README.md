@@ -24,6 +24,7 @@ See the [vanilla-animation.js demo](https://codepen.io/mitera/pen/azOdmrv).
 - by default, you can use it to trigger animate.css animations
 - anywhere on the page and anywhere in the DOM
 - tested in Edge, Chrome, Firefox
+- By default, you can use it to trigger [animate.css](https://animate.style) animations. But you can easily change the settings to your favorite animation library.
 
 ### Install
 
