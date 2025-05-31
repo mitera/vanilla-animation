@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1">
+    <title>Vanilla animation</title>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <style>
+        .rounded-circle {
+            background-color: #cc0000;
+            aspect-ratio: 1 ;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div data-vanimation-delay="0.5s" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__rollIn">
+            this
+        </div>
+        <div data-vanimation-delay="0.5s" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__bounceInDown center">
+            is
+        </div>
+        <div data-vanimation-delay="500ms" data-vanimation="animate__lightSpeedIn" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation">
+            only
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation rollIn center">
+            a
+        </div>
+        <div data-vanimation-iteration="5" data-vanimation-duration="150ms" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__pulse">
+            very
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__bounceInRight center">
+            small
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__bounceInLeft">
+            dimostration
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__flipInX center">
+            test
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__bounceInRight">
+            to
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__rollIn center">
+            test
+        </div>
+        <div data-vanimation-iteration="5" data-vanimation-duration="0.15s" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__shake">
+            a
+        </div>
+        <div data-vanimation-iteration="2" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__swing center">
+            lot
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__rollIn">
+            of
+        </div>
+        <div data-vanimation-delay="0.5s" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__bounceInUp center">
+            animation
+        </div>
+        <div data-vanimation-delay="0.5s" data-vanimation-duration="0.15s" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__lightSpeedIn">
+            cases
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__rollIn center">
+           that's
+        </div>
+        <div data-vanimation-iteration="5" data-vanimation-duration="0.25s" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__pulse">
+            all
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__lightSpeedIn center">
+            folks
+        </div>
+
+        <div data-vanimation-iteration="5" data-vanimation-duration="0.15s" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__bounce">
+            goodbye
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__bounceInUp center">
+            see
+        </div>
+        <div data-vanimation-offset="400" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__bounceInRight">
+            you
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__rollIn center">
+            next
+        </div>
+        <div data-vanimation-iteration="5" data-vanimation-duration="0.15s" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__flip">
+            time
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__bounceInRight center">
+            regards
+        </div>
+
+        <div data-vanimation-delay="0.5s" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__rollIn">
+            vanilla
+        </div>
+        <div data-vanimation-delay="1s" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__bounceInDown center">
+            animation
+        </div>
+        <div data-vanimation-delay="1.5s" class="col-12 col-md-6 col-lg-4 rounded-circle vanimation animate__bounceInRight">
+            vanimation
+        </div>
+    </div>
+</div>
+
+<script src="../dist/vanilla-animation.min.js"></script>
+<script>
+    new VanillaAnimation();
+</script>
+</body>
+</html>
