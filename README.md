@@ -103,7 +103,13 @@ Where:
 - `live` is `true` or `false` to enable live detection
 - `scrollContainer` is an optional element to use instead of the window
 - `callback` is a callback function that is called when the animation is completed
-
+  ```
+    new VanillaAnimation({
+        callback: function(el) {
+            el.classList.add("vanimation-active");
+        }
+    });
+  ```
 ### Data API
 
 - `data-vanimation="animate__lightSpeedIn"` is the animation class name
