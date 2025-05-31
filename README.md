@@ -69,7 +69,7 @@ Set animation add `vanimation` on `class` attribute and css animation on `data-v
 And adjust behaviour by using `data-vanimation-*` attributes:
 
     <div class="vanimation"
-        data-vanimation="fade-up"
+        data-vanimation="animate__lightSpeedIn"
         data-vanimation-offset="200"
         data-vanimation-delay="50"
         data-vanimation-duration="1000"
