@@ -1,3 +1,10 @@
+<a name="0.0.3"></a>
+# 0.0.3 (2025-05-31)
+
+### release summary
+
+- updating documentation
+
 <a name="0.0.2"></a>
 # 0.0.2 (2025-05-31)
 

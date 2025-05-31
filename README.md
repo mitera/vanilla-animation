@@ -8,7 +8,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/vanilla-animation.svg?style=flat-square)](https://www.npmjs.com/package/vanilla-animation)
 [![yarn](https://img.shields.io/npm/v/vanilla-animation.svg?logo=yarn&logoColor=fff&label=yarn)](https://yarnpkg.com/package?name=vanilla-animation)
 
-[Demo](#demo) - [Features](#features) - [Install](#install) - [Usage](#usage) - [Options](#options) -  [Changelog](#changelog) - [License](#license)
+[Demo](#demo) - [Features](#features) - [Install](#install) - [Usage](#usage) - [Options](#options) - [Data API](#data-api) -  [Changelog](#changelog) - [License](#license)
 
 ## *Inspired by:* AOS ans WOW
 
@@ -46,7 +46,37 @@ modular code
 
 ### Usage
 
-    new VanillaAnimation();
+Add styles in `<head>`:
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+Add script right before closing `</body>` tag, and initialize AOS:
+
+    <script>
+        new VanillaAnimation();
+    </script>
+
+Set animation add `vanimation` on `class` attribute and css animation on `data-vanimation` or directly on `class` attribute:
+
+    <div data-vanimation="animate__lightSpeedIn" class="vanimation">
+        test1
+    </div>
+
+    <div class="vanimation animate__lightSpeedIn">
+        test2
+    </div>
+
+And adjust behaviour by using `data-vanimation-*` attributes:
+
+    <div class="vanimation"
+        data-vanimation="fade-up"
+        data-vanimation-offset="200"
+        data-vanimation-delay="50"
+        data-vanimation-duration="1000"
+        data-vanimation-iteration="5"
+    >
+        test3
+    </div>
 
 ### Options
 
@@ -71,6 +101,14 @@ Where:
 - `mobile` is `true` or `false` to enable mobile detection
 - `live` is `true` or `false` to enable live detection
 - `scrollContainer` is an optional element to use instead of the window
+
+### Data API
+
+- `data-vanimation="animate__lightSpeedIn"` is the animation class name
+- `data-vanimation-offset="200"` is the offset in pixels from the bottom of the viewport when the animation should start
+- `data-vanimation-delay="0.5s"` is animation delay time is seconds or milliseconds
+- `data-vanimation-duration="500ms"` is animation duration time is seconds or milliseconds
+- `data-vanimation-iteration="5"` is the animation iteration count
 
 ### Known limitations
 
