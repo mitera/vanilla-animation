@@ -3,7 +3,7 @@
   "version": "0.0.5",
   "license": "MIT",
   "author": "Simone Miterangelis <simone@mite.it>",
-  "description": "a vanilla responsive equal heights",
+  "description": "a super light vanilla animation scroll down",
   "main": "dist/vanilla-animation.js",
   "types": "dist/vanilla-animation.d.ts",
   "repository": {
