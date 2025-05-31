@@ -42,7 +42,7 @@ You can also install using the package managers [NPM](https://www.npmjs.com/pack
 
 modular code
 
-    import 'vanilla-animation'
+    import VanillaAnimation from 'vanilla-animation'
 
 ### Usage
 
