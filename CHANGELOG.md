@@ -1,3 +1,10 @@
+<a name="1.0.4"></a>
+# 1.0.4 (2025-06-31)
+
+### release summary
+
+- Update version metadata, changelog, and README improvements for clarity.
+
 <a name="1.0.3"></a>
 # 1.0.3 (2025-05-31)
 

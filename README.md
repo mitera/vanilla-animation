@@ -10,7 +10,7 @@
 
 [Demo](#demo) - [Features](#features) - [Install](#install) - [Usage](#usage) - [Options](#options) - [Data API](#data-api) -  [Changelog](#changelog) - [License](#license)
 
-## *Inspired by:* AOS ans WOW
+## *Inspired by:* AOS and WOW
 
 > *Vanilla Animation:* super light lib for reveal CSS animation as you scroll down a page.
 
@@ -21,10 +21,9 @@ See the [vanilla-animation.js demo](https://codepen.io/mitera/pen/azOdmrv).
 ### Features
 
 - reveal CSS animation as you scroll down a page
-- by default, you can use it to trigger animate.css animations
+- by default, you can use it to trigger [animate.css](https://animate.style) animations. But you can easily change the settings to your favorite animation library.
 - anywhere on the page and anywhere in the DOM
 - tested in Edge, Chrome, Firefox
-- By default, you can use it to trigger [animate.css](https://animate.style) animations. But you can easily change the settings to your favorite animation library.
 
 ### Install
 
@@ -50,7 +49,7 @@ Add styles in `<head>`:
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
-Add script right before closing `</body>` tag, and initialize AOS:
+Add script right before closing `</body>` tag, and initialize it:
 
     <script>
         new VanillaAnimation();
