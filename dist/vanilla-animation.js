@@ -1,6 +1,6 @@
 /*!
  * @author Simone Miterangelis <simone@mite.it>
- * vanilla-animation v1.0.3 by @mitera
+ * vanilla-animation v1.0.5 by @mitera
  * https://github.com/mitera/vanilla-animation
  * Released under the MIT License.
  */
@@ -101,10 +101,12 @@
 	     */
 	    resetItem(item) {
 	        item.style.visibility = 'hidden';
-	        let animationName = window.getComputedStyle(item).getPropertyValue('animation-name');
-	        if (animationName && animationName != 'none') {
-	            item.classList.remove(this.settings.animatePrefix + animationName);
-	            item.dataset.vanimation = this.settings.animatePrefix + animationName;
+	        if (!item.dataset.vanimation) {
+	            let animationName = window.getComputedStyle(item).getPropertyValue('animation-name');
+	            if (animationName && animationName != 'none') {
+	                item.classList.remove(this.settings.animatePrefix + animationName);
+	                item.dataset.vanimation = this.settings.animatePrefix + animationName;
+	            }
 	        }
 	    }
 	    /**

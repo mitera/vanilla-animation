@@ -61,6 +61,8 @@ Set animation add `vanimation` on `class` attribute and css animation on `data-v
         test1
     </div>
 
+For compatibility with `wow`, you can use `animate__` animation directly on classes:
+
     <div class="vanimation animate__fadeIn">
         test2
     </div>
@@ -95,7 +97,7 @@ The default `options` are:
 Where:
 
 - `boxClass` is a string that containing the selector classes. This string must be a valid CSS selector string
-- `animatePrefix` is a string that indicated the prefix of animation.
+- `animatePrefix` is a string that indicated the prefix of animation if not using data-animation attribute.
 - `animateClass` is a string that indicated the end of animation.
 - `offset` is the offset in pixels from the bottom of the viewport when the animation should start
 - `mobile` is `true` or `false` to enable mobile detection

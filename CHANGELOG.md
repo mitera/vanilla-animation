@@ -1,5 +1,12 @@
+<a name="1.0.5"></a>
+# 1.0.5 (2025-06-03)
+
+### release summary
+
+- Fix animation reset logic to prevent overwriting existing data attributes. Update version, changelog, and README for improved clarity and compatibility notes.
+
 <a name="1.0.4"></a>
-# 1.0.4 (2025-06-31)
+# 1.0.4 (2025-06-01)
 
 ### release summary
 

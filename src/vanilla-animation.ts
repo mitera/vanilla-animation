@@ -105,10 +105,12 @@ export default class VanillaAnimation {
      */
     protected resetItem(item: HTMLElement) {
         item.style.visibility = 'hidden';
-        let animationName = window.getComputedStyle(item).getPropertyValue('animation-name');
-        if (animationName && animationName != 'none') {
-            item.classList.remove(this.settings.animatePrefix + animationName);
-            item.dataset.vanimation = this.settings.animatePrefix + animationName;
+        if (!item.dataset.vanimation) {
+            let animationName = window.getComputedStyle(item).getPropertyValue('animation-name');
+            if (animationName && animationName != 'none') {
+                item.classList.remove(this.settings.animatePrefix + animationName);
+                item.dataset.vanimation = this.settings.animatePrefix + animationName;
+            }
         }
     }
 
