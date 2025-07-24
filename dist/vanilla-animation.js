@@ -210,9 +210,23 @@
 	                        }
 	                    }
 	                }
+	                if (mutation.type === 'attributes') {
+	                    const changedAttrName = mutation.attributeName;
+	                    if (changedAttrName) {
+	                        let node = mutation.target;
+	                        const newValue = node.getAttribute(changedAttrName);
+	                        if (changedAttrName == 'data-vanimation-reload' && newValue == 'true') {
+	                            this.resetItem(node);
+	                            if ("IntersectionObserver" in window) {
+	                                let itemObserver = this.intertsectionObserve();
+	                                itemObserver.observe(node);
+	                            }
+	                        }
+	                    }
+	                }
 	            }
 	        });
-	        observer.observe(this.container, { childList: true, subtree: true, });
+	        observer.observe(this.container, { childList: true, attributes: true, subtree: true, });
 	    }
 	    /**
 	     * Determines whether the given user agent string corresponds to a mobile device.

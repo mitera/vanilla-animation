@@ -1,3 +1,10 @@
+<a name="1.0.6"></a>
+# 1.0.6 (2025-07-24)
+
+### release summary
+
+- Enable attribute-based "data-vanimation-reload" support for dynamic animation reset logic. Update MutationObserver to observe attribute changes.
+
 <a name="1.0.5"></a>
 # 1.0.5 (2025-06-03)
 
