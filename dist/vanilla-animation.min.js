@@ -1,6 +1,6 @@
 /*!
  * @author Simone Miterangelis <simone@mite.it>
- * vanilla-animation v1.0.5 by @mitera
+ * vanilla-animation v1.0.6 by @mitera
  * https://github.com/mitera/vanilla-animation
  * Released under the MIT License.
  */
