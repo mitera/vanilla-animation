@@ -10,7 +10,7 @@ export default class VanillaAnimation {
     constructor(settings?: VanillaAnimationSettings) {
 
         let default_settings: VanillaAnimationSettings = {
-            boxClass: 'vanimation',
+            boxClass: '.vanimation, [data-vanimation]',
             animatePrefix: 'animate__',
             animateClass: 'animate__animated',
             offset: 0,
@@ -32,7 +32,7 @@ export default class VanillaAnimation {
             }
         }
 
-        this.items = <HTMLElement[]>Array.from(this.container.querySelectorAll('.' + this.settings.boxClass));
+        this.items = <HTMLElement[]>Array.from(this.container.querySelectorAll(this.settings.boxClass));
         if (!disabled) {
             const update = this.resetItems.bind(this);
             if (document.readyState !== 'loading') {

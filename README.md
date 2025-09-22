@@ -55,13 +55,13 @@ Add script right before closing `</body>` tag, and initialize it:
         new VanillaAnimation();
     </script>
 
-Set animation add `vanimation` on `class` attribute and css animation on `data-vanimation` or directly on `class` attribute:
+Set css animation on `data-vanimation` or directly on `class` attribute:
 
-    <div data-vanimation="animate__fadeIn" class="vanimation">
+    <div data-vanimation="animate__fadeIn">
         test1
     </div>
 
-For compatibility with `wow`, you can use `animate__` animation directly on classes:
+For compatibility with `wow`, add `vanimation` on `class` attribute and you can use `animate__` animation directly on classes:
 
     <div class="vanimation animate__fadeIn">
         test2
@@ -69,7 +69,7 @@ For compatibility with `wow`, you can use `animate__` animation directly on clas
 
 And adjust behaviour by using `data-vanimation-*` attributes:
 
-    <div class="vanimation"
+    <div 
         data-vanimation="animate__fadeIn"
         data-vanimation-offset="200"
         data-vanimation-delay="50"
@@ -84,7 +84,7 @@ And adjust behaviour by using `data-vanimation-*` attributes:
 The default `options` are:
 
     {
-        boxClass: 'vanimation',
+        boxClass: '.vanimation, [data-vanimation]',
         animatePrefix: 'animate__',
         animateClass: 'animate__animated',
         offset: 0,
@@ -118,6 +118,7 @@ Where:
 - `data-vanimation-delay="0.5s"` is animation delay time is seconds or milliseconds
 - `data-vanimation-duration="500ms"` is animation duration time is seconds or milliseconds
 - `data-vanimation-iteration="5"` is the animation iteration count
+- `data-vanimation-reload="true"` set to true to reload the animation on scroll
 
 ### Known limitations
 

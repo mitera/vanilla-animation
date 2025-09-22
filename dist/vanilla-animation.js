@@ -1,6 +1,6 @@
 /*!
  * @author Simone Miterangelis <simone@mite.it>
- * vanilla-animation v1.0.6 by @mitera
+ * vanilla-animation v1.0.7 by @mitera
  * https://github.com/mitera/vanilla-animation
  * Released under the MIT License.
  */
@@ -14,7 +14,7 @@
 	    constructor(settings) {
 	        this.offsetItems = [];
 	        let default_settings = {
-	            boxClass: 'vanimation',
+	            boxClass: '.vanimation, [data-vanimation]',
 	            animatePrefix: 'animate__',
 	            animateClass: 'animate__animated',
 	            offset: 0,
@@ -32,7 +32,7 @@
 	                this.container = container;
 	            }
 	        }
-	        this.items = Array.from(this.container.querySelectorAll('.' + this.settings.boxClass));
+	        this.items = Array.from(this.container.querySelectorAll(this.settings.boxClass));
 	        if (!disabled) {
 	            const update = this.resetItems.bind(this);
 	            if (document.readyState !== 'loading') {

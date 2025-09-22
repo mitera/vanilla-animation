@@ -1,3 +1,10 @@
+<a name="1.0.7"></a>
+# 1.0.7 (2025-09-22)
+
+### release summary
+
+- Update boxClass selector to support multiple formats (class and data attribute)
+
 <a name="1.0.6"></a>
 # 1.0.6 (2025-07-24)
 
