@@ -164,7 +164,7 @@ export default class VanillaAnimation {
         }
         let iteration = item.dataset.vanimationIteration ? item.dataset.vanimationIteration : window.getComputedStyle(item).getPropertyValue('animation-iteration-count');
         if (iteration) {
-            item.style.setProperty('animation-iteration-count', delay);
+            item.style.setProperty('animation-iteration-count', iteration);
         }
         if (this.settings.callback) {
             let intDuration = this.parseDuration(duration);
@@ -207,7 +207,7 @@ export default class VanillaAnimation {
             for (let mutation of mutations) {
                 for (let node of mutation.addedNodes) {
                     if (!(node instanceof HTMLElement)) continue;
-                    if (node.classList.contains(this.settings.boxClass)) {
+                    if (node.classList.contains('vanimation') || node.hasAttribute('data-vanimation')) {
                         this.resetItem(node)
                         if ("IntersectionObserver" in window) {
                             let itemObserver = this.intertsectionObserve();

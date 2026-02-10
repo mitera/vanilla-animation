@@ -1,3 +1,10 @@
+<a name="1.0.8"></a>
+# 1.0.8 (2026-02-10)
+
+### release summary
+
+- Fix `animation-iteration-count` assignment bug and enhance MutationObserver logic to support `data-vanimation` attribute. Update dynamic class detection for improved flexibility.
+
 <a name="1.0.7"></a>
 # 1.0.7 (2025-09-22)
 

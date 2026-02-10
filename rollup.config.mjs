@@ -3,7 +3,7 @@ import rollupTypescript from '@rollup/plugin-typescript';
 
 const license = `/*!
  * @author Simone Miterangelis <simone@mite.it>
- * vanilla-animation v1.0.7 by @mitera
+ * vanilla-animation v1.0.8 by @mitera
  * https://github.com/mitera/vanilla-animation
  * Released under the MIT License.
  */`;

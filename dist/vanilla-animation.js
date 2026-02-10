@@ -1,6 +1,6 @@
 /*!
  * @author Simone Miterangelis <simone@mite.it>
- * vanilla-animation v1.0.7 by @mitera
+ * vanilla-animation v1.0.8 by @mitera
  * https://github.com/mitera/vanilla-animation
  * Released under the MIT License.
  */
@@ -159,7 +159,7 @@
 	        }
 	        let iteration = item.dataset.vanimationIteration ? item.dataset.vanimationIteration : window.getComputedStyle(item).getPropertyValue('animation-iteration-count');
 	        if (iteration) {
-	            item.style.setProperty('animation-iteration-count', delay);
+	            item.style.setProperty('animation-iteration-count', iteration);
 	        }
 	        if (this.settings.callback) {
 	            let intDuration = this.parseDuration(duration);
@@ -202,7 +202,7 @@
 	                for (let node of mutation.addedNodes) {
 	                    if (!(node instanceof HTMLElement))
 	                        continue;
-	                    if (node.classList.contains(this.settings.boxClass)) {
+	                    if (node.classList.contains('vanimation') || node.hasAttribute('data-vanimation')) {
 	                        this.resetItem(node);
 	                        if ("IntersectionObserver" in window) {
 	                            let itemObserver = this.intertsectionObserve();
