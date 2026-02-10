@@ -72,8 +72,8 @@ And adjust behaviour by using `data-vanimation-*` attributes:
     <div 
         data-vanimation="animate__fadeIn"
         data-vanimation-offset="200"
-        data-vanimation-delay="50"
-        data-vanimation-duration="1000"
+        data-vanimation-delay="50ms"
+        data-vanimation-duration="1000ms"
         data-vanimation-iteration="5"
     >
         test3
