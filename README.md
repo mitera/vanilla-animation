@@ -8,11 +8,11 @@
 [![npm downloads](https://img.shields.io/npm/dm/vanilla-animation.svg?style=flat-square)](https://www.npmjs.com/package/vanilla-animation)
 [![yarn](https://img.shields.io/npm/v/vanilla-animation.svg?logo=yarn&logoColor=fff&label=yarn)](https://yarnpkg.com/package?name=vanilla-animation)
 
-[Demo](#demo) - [Features](#features) - [Install](#install) - [Usage](#usage) - [Options](#options) - [Data API](#data-api) -  [Changelog](#changelog) - [License](#license)
+[Demo](#demo) - [Features](#features) - [Install](#install) - [Usage](#usage) - [Options](#options) - [Methods](#methods) - [Data API](#data-api) -  [Changelog](#changelog) - [License](#license)
 
 ## *Inspired by:* AOS and WOW
 
-> *Vanilla Animation:* super light lib for reveal CSS animation as you scroll down a page.
+> *Vanilla Animation:* super light lib to reveal CSS animations as you scroll down a page.
 
 ### Demo
 
@@ -20,7 +20,7 @@ See the [vanilla-animation.js demo](https://codepen.io/mitera/pen/azOdmrv).
 
 ### Features
 
-- reveal CSS animation as you scroll down a page
+- reveal CSS animations as you scroll down a page
 - by default, you can use it to trigger [animate.css](https://animate.style) animations. But you can easily change the settings to your favorite animation library.
 - anywhere on the page and anywhere in the DOM
 - tested in Edge, Chrome, Firefox
@@ -35,15 +35,16 @@ Pin an exact version (not `@latest`) in production, so that a new release cannot
 
 Download [vanilla-animation.min.js](https://github.com/mitera/vanilla-animation/blob/main/dist/vanilla-animation.min.js) and include the script in your HTML file:
 
-	<script src="vanilla-animation.js" type="text/javascript"></script>
+    <script src="vanilla-animation.min.js" type="text/javascript"></script>
 
-You can also install using the package managers [NPM](https://www.npmjs.com/package/vanilla-animation).
+You can also install it with [npm](https://www.npmjs.com/package/vanilla-animation):
 
     npm install vanilla-animation
 
-modular code
+and import it as a module (TypeScript types included):
 
     import VanillaAnimation from 'vanilla-animation'
+    import type { VanillaAnimationSettings } from 'vanilla-animation'
 
 ### Usage
 
@@ -51,25 +52,25 @@ Add styles in `<head>`:
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
-Add script right before closing `</body>` tag, and initialize it:
+Add the script right before the closing `</body>` tag and initialize it (in `<head>` it works too: the items are collected when the DOM is ready):
 
     <script>
         new VanillaAnimation();
     </script>
 
-Set css animation on `data-vanimation` or directly on `class` attribute:
+Set the CSS animation on the `data-vanimation` attribute or directly on the `class` attribute:
 
     <div data-vanimation="animate__fadeIn">
         test1
     </div>
 
-For compatibility with `wow`, add `vanimation` on `class` attribute and you can use `animate__` animation directly on classes:
+For compatibility with `wow`, add `vanimation` to the `class` attribute and use the `animate__` animation directly as a class:
 
     <div class="vanimation animate__fadeIn">
         test2
     </div>
 
-And adjust behaviour by using `data-vanimation-*` attributes:
+And adjust the behaviour with the `data-vanimation-*` attributes:
 
     <div 
         data-vanimation="animate__fadeIn"
@@ -98,14 +99,14 @@ The default `options` are:
 
 Where:
 
-- `boxClass` is a string that containing the selector classes. This string must be a valid CSS selector string
-- `animatePrefix` is a string that indicated the prefix of animation if not using data-animation attribute.
-- `animateClass` is a string that indicated the end of animation.
-- `offset` is the offset in pixels from the bottom of the viewport when the animation should start
-- `mobile` is `true` or `false` to enable mobile detection
-- `live` is `true` or `false` to enable live detection
+- `boxClass` is the CSS selector of the items to animate (it must be a valid CSS selector)
+- `animatePrefix` is the prefix of the animation class, used when the animation is set on the `class` attribute instead of `data-vanimation` (e.g. `animate__` + `fadeIn`)
+- `animateClass` is the class added to start the animation (`animate__animated` for animate.css); it also marks the items already animated
+- `offset` is the distance in pixels from the bottom of the viewport: an item is animated only after it has entered the viewport by this distance
+- `mobile` is `false` to disable the animations on mobile devices (the items are shown without animation)
+- `live` is `true` to detect the items added to the page later and the `data-vanimation-reload` attribute
 - `scrollContainer` is an optional CSS selector of the scrolling element to use instead of the window
-- `callback` is a callback function that is called when the animation is completed
+- `callback` is a function called with the item when its animation is completed (delay + duration × iterations; an infinite animation counts as one iteration)
   ```
     new VanillaAnimation({
         callback: function(el) {
@@ -126,24 +127,24 @@ You can pass only the options you want to change: the others keep their default 
 ### Data API
 
 - `data-vanimation="animate__fadeIn"` is the animation class name (more classes separated by spaces are allowed, e.g. `animate__fadeIn animate__slow`)
-- `data-vanimation-offset="200"` is the offset in pixels from the bottom of the viewport when the animation should start
-- `data-vanimation-delay="0.5s"` is animation delay time is seconds or milliseconds
-- `data-vanimation-duration="500ms"` is animation duration time is seconds or milliseconds
+- `data-vanimation-offset="200"` is the offset in pixels for this item (it overrides the `offset` option)
+- `data-vanimation-delay="0.5s"` is the animation delay, in seconds (`s`) or milliseconds (`ms`)
+- `data-vanimation-duration="500ms"` is the animation duration, in seconds (`s`) or milliseconds (`ms`)
 - `data-vanimation-iteration="5"` is the animation iteration count
-- `data-vanimation-reload="true"` set to true to reload the animation: the item is hidden and animated again when it enters the viewport
+- `data-vanimation-reload="true"` replays the animation: the item is hidden and animated again when it enters the viewport (requires `live: true`; set the attribute again to replay it once more)
 
 ### Known limitations
 
 #### CSS transitions and animations on mobile device
 
 Chrome on Android requires that you set "minimum-scale=1" in the "viewport" meta of your page.
-Not doing so causes the scrollY value to start increasing only after a good portion of the page is already scrolled
+Not doing so causes the scrollY value to start increasing only after a good portion of the page is already scrolled.
 
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1">
 
 ### Changelog
 
-To see what's new or changed in the latest version, see the [changelog](https://github.com/mitera/vanilla-animation/blob/master/CHANGELOG.md)
+To see what's new or changed in the latest version, see the [changelog](https://github.com/mitera/vanilla-animation/blob/main/CHANGELOG.md)
 
 ### License
 
