@@ -1,11 +1,14 @@
 {
   "name": "vanilla-animation",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "license": "MIT",
   "author": "Simone Miterangelis <simone@mite.it>",
   "description": "a super light vanilla animation scroll down",
   "main": "dist/vanilla-animation.js",
   "types": "dist/vanilla-animation.d.ts",
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mitera/vanilla-animation.git"
@@ -30,7 +33,6 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.5",
-    "esbuild": "^0.28.1",
     "rollup": "^4.41.1",
     "terser": "^5.39.2",
     "tslib": "^2.8.1",

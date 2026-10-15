@@ -1,6 +1,6 @@
 /*!
  * @author Simone Miterangelis <simone@mite.it>
- * vanilla-animation v1.0.8 by @mitera
+ * vanilla-animation v1.1.0 by @mitera
  * https://github.com/mitera/vanilla-animation
  * Released under the MIT License.
  */
@@ -13,6 +13,11 @@
 	class VanillaAnimation {
 	    constructor(settings) {
 	        this.offsetItems = [];
+	        this.container = null;
+	        this.scrollTarget = window;
+	        this.itemObserver = null;
+	        this.mutationObserver = null;
+	        this.callbackTimers = [];
 	        let default_settings = {
 	            boxClass: '.vanimation, [data-vanimation]',
 	            animatePrefix: 'animate__',
@@ -24,7 +29,49 @@
 	            callback: null
 	        };
 	        this.settings = Object.assign(Object.assign({}, default_settings), settings);
+	        this.onReady = this.init.bind(this);
+	        this.onScroll = this.handleScroll.bind(this);
 	        let disabled = !this.settings.mobile && this.isMobile(navigator.userAgent);
+	        // Without IntersectionObserver the items are left untouched (visible, not animated)
+	        if (disabled || !("IntersectionObserver" in window)) {
+	            return;
+	        }
+	        // The items can only be collected once the DOM is parsed (the script may be loaded in <head>)
+	        if (document.readyState !== 'loading') {
+	            this.init();
+	        }
+	        else {
+	            document.addEventListener('DOMContentLoaded', this.onReady, { once: true });
+	        }
+	    }
+	    /**
+	     * Stops observing the items and removes every listener and pending callback.
+	     * Items that have not been animated yet keep their current state.
+	     *
+	     * @return {void} This method does not return a value.
+	     */
+	    destroy() {
+	        document.removeEventListener('DOMContentLoaded', this.onReady);
+	        this.scrollTarget.removeEventListener('scroll', this.onScroll);
+	        if (this.itemObserver) {
+	            this.itemObserver.disconnect();
+	            this.itemObserver = null;
+	        }
+	        if (this.mutationObserver) {
+	            this.mutationObserver.disconnect();
+	            this.mutationObserver = null;
+	        }
+	        this.callbackTimers.forEach(timer => window.clearTimeout(timer));
+	        this.callbackTimers = [];
+	        this.offsetItems = [];
+	    }
+	    /**
+	     * Collects the items inside the container, hides them and starts observing them,
+	     * the DOM mutations (if `live` is enabled) and the scroll position.
+	     *
+	     * @return {void} This method does not return a value.
+	     */
+	    init() {
 	        this.container = document.body;
 	        if (this.settings.scrollContainer) {
 	            const container = document.querySelector(this.settings.scrollContainer);
@@ -32,82 +79,71 @@
 	                this.container = container;
 	            }
 	        }
-	        this.items = Array.from(this.container.querySelectorAll(this.settings.boxClass));
-	        if (!disabled) {
-	            const update = this.resetItems.bind(this);
-	            if (document.readyState !== 'loading') {
-	                this.resetItems();
-	            }
-	            else {
-	                document.addEventListener('DOMContentLoaded', update, { once: true });
-	            }
-	            if ("IntersectionObserver" in window) {
-	                let itemObserver = this.intertsectionObserve();
-	                this.items.forEach(function (item) {
-	                    itemObserver.observe(item);
-	                });
-	            }
-	            if (this.settings.live) {
-	                this.observeItemMutation();
-	            }
-	            this.initScrollEvent();
+	        this.scrollTarget = this.container === document.body ? window : this.container;
+	        this.itemObserver = this.intersectionObserve();
+	        this.container.querySelectorAll(this.settings.boxClass).forEach(item => {
+	            this.watchItem(item);
+	        });
+	        if (this.settings.live) {
+	            this.observeItemMutation();
 	        }
+	        this.scrollTarget.addEventListener('scroll', this.onScroll, { passive: true });
 	    }
 	    /**
-	     * Initializes the scroll event listener to trigger animations on elements.
-	     * This method sets up an event listener on the window object to monitor the scroll position
-	     * and evaluates each element in the `offsetItems` array. If the scroll position meets
-	     * the specified offset condition, the element's animation is triggered, and it is removed
-	     * from the `offsetItems` array to prevent repeat processing.
+	     * Resets the given item and (re)starts observing it.
+	     *
+	     * @param {HTMLElement} item - The element to animate when it enters the viewport.
+	     * @return {void} This method does not return a value.
+	     */
+	    watchItem(item) {
+	        if (!this.itemObserver)
+	            return;
+	        this.resetItem(item);
+	        // unobserve first so that a reload always gets a fresh intersection entry
+	        this.itemObserver.unobserve(item);
+	        this.itemObserver.observe(item);
+	    }
+	    /**
+	     * Evaluates the items waiting for their offset: when the scroll position goes beyond
+	     * the stored position plus the offset, the item is animated and removed from the list.
 	     *
 	     * @return {void} This method does not return a value.
 	     */
-	    initScrollEvent() {
-	        let $this = this;
-	        window.addEventListener('scroll', function () {
-	            $this.offsetItems.forEach(function (item) {
-	                let offset = item.dataset.vanimationOffset ? parseInt(item.dataset.vanimationOffset) : $this.settings.offset;
-	                if (item.dataset.vanimationScrolly) {
-	                    if (parseInt(item.dataset.vanimationScrolly) + offset < window.scrollY) {
-	                        item.removeAttribute('data-vanimation-scrolly');
-	                        $this.doAnimation(item);
-	                        const index = $this.offsetItems.indexOf(item);
-	                        if (index > -1) {
-	                            $this.offsetItems.splice(index, 1);
-	                        }
-	                    }
-	                }
-	            });
+	    handleScroll() {
+	        const scrollY = this.getScrollY();
+	        this.offsetItems = this.offsetItems.filter(item => {
+	            const startY = parseInt(item.dataset.vanimationScrolly || '', 10);
+	            if (isNaN(startY) || startY + this.getOffset(item) >= scrollY) {
+	                return true;
+	            }
+	            item.removeAttribute('data-vanimation-scrolly');
+	            this.doAnimation(item);
+	            return false;
 	        });
 	    }
 	    /**
-	     * Resets all items to their initial state by iterating through the list
-	     * of items and calling the resetItem method on each one.
-	     *
-	     * @return {void} Does not return any value.
-	     */
-	    resetItems() {
-	        let $this = this;
-	        this.items.forEach(function (item) {
-	            $this.resetItem(item);
-	        });
-	    }
-	    /**
-	     * Resets the given item's visibility and animation classes.
+	     * Resets the given item's visibility and animation classes, so that it can be animated (again).
 	     *
 	     * @param {HTMLElement} item - The HTML element to be reset. This element's visibility will be set to 'hidden',
-	     *                              and if it has an animation applied, the animation classes will be modified or removed.
+	     *                              and the classes added by a previous animation are removed.
 	     * @return {void} This method does not return a value.
 	     */
 	    resetItem(item) {
 	        item.style.visibility = 'hidden';
-	        if (!item.dataset.vanimation) {
-	            let animationName = window.getComputedStyle(item).getPropertyValue('animation-name');
+	        if (item.dataset.vanimation) {
+	            item.classList.remove(...this.splitClasses(item.dataset.vanimation));
+	        }
+	        else {
+	            // only the first animation is taken when several are set (e.g. "fadeIn, pulse")
+	            let animationName = window.getComputedStyle(item).getPropertyValue('animation-name').split(',')[0].trim();
 	            if (animationName && animationName != 'none') {
 	                item.classList.remove(this.settings.animatePrefix + animationName);
 	                item.dataset.vanimation = this.settings.animatePrefix + animationName;
 	            }
 	        }
+	        item.classList.remove(this.settings.animateClass);
+	        item.removeAttribute('data-vanimation-scrolly');
+	        this.offsetItems = this.offsetItems.filter(offsetItem => offsetItem !== item);
 	    }
 	    /**
 	     * Creates and returns an IntersectionObserver instance that observes elements for intersection events.
@@ -117,25 +153,23 @@
 	     * @protected
 	     * @return {IntersectionObserver} The created IntersectionObserver instance that is configured with the behavior to handle intersection events.
 	     */
-	    intertsectionObserve() {
-	        let $this = this;
-	        let itemObserver = new IntersectionObserver(function (entries) {
-	            entries.forEach(function (entry) {
-	                if (entry.isIntersecting) {
-	                    let item = entry.target;
-	                    if (!item.classList.contains($this.settings.animateClass)) {
-	                        if (!$this.isVisible(item)) {
-	                            item.dataset.vanimationScrolly = window.scrollY + '';
-	                            $this.offsetItems.push(item);
-	                        }
-	                        else {
-	                            $this.doAnimation(item);
-	                        }
-	                    }
+	    intersectionObserve() {
+	        return new IntersectionObserver(entries => {
+	            entries.forEach(entry => {
+	                if (!entry.isIntersecting)
+	                    return;
+	                let item = entry.target;
+	                if (item.classList.contains(this.settings.animateClass) || this.offsetItems.indexOf(item) > -1)
+	                    return;
+	                if (this.isVisible(item)) {
+	                    this.doAnimation(item);
+	                }
+	                else {
+	                    item.dataset.vanimationScrolly = this.getScrollY() + '';
+	                    this.offsetItems.push(item);
 	                }
 	            });
 	        });
-	        return itemObserver;
 	    }
 	    /**
 	     * Triggers an animation on the given HTML element by applying relevant CSS classes and styles.
@@ -145,88 +179,95 @@
 	     * @return {undefined} This method does not return any value.
 	     */
 	    doAnimation(item) {
-	        let animationName = item.dataset.vanimation ? item.dataset.vanimation : 'none';
-	        item.classList.add(animationName);
-	        item.classList.add(this.settings.animateClass);
+	        if (this.itemObserver) {
+	            this.itemObserver.unobserve(item);
+	        }
+	        item.classList.add(...this.splitClasses(item.dataset.vanimation), this.settings.animateClass);
 	        item.style.visibility = 'visible';
-	        let duration = item.dataset.vanimationDuration ? item.dataset.vanimationDuration : window.getComputedStyle(item).getPropertyValue('animation-duration');
+	        const computedStyle = window.getComputedStyle(item);
+	        let duration = item.dataset.vanimationDuration || computedStyle.getPropertyValue('animation-duration');
 	        if (duration) {
 	            item.style.setProperty('animation-duration', duration);
 	        }
-	        let delay = item.dataset.vanimationDelay ? item.dataset.vanimationDelay : window.getComputedStyle(item).getPropertyValue('animation-delay');
+	        let delay = item.dataset.vanimationDelay || computedStyle.getPropertyValue('animation-delay');
 	        if (delay) {
 	            item.style.setProperty('animation-delay', delay);
 	        }
-	        let iteration = item.dataset.vanimationIteration ? item.dataset.vanimationIteration : window.getComputedStyle(item).getPropertyValue('animation-iteration-count');
+	        let iteration = item.dataset.vanimationIteration || computedStyle.getPropertyValue('animation-iteration-count');
 	        if (iteration) {
 	            item.style.setProperty('animation-iteration-count', iteration);
 	        }
-	        if (this.settings.callback) {
-	            let intDuration = this.parseDuration(duration);
-	            let intDelay = this.parseDuration(duration);
-	            let totalDuration = intDuration + intDelay;
-	            setTimeout(() => {
-	                this.settings.callback(item);
+	        const callback = this.settings.callback;
+	        if (callback) {
+	            // an infinite (or invalid) iteration count is counted as a single iteration
+	            let iterationCount = parseFloat(iteration.split(',')[0]);
+	            if (!isFinite(iterationCount) || iterationCount < 0) {
+	                iterationCount = 1;
+	            }
+	            let totalDuration = this.parseDuration(delay) + this.parseDuration(duration) * iterationCount;
+	            const timer = window.setTimeout(() => {
+	                this.callbackTimers = this.callbackTimers.filter(callbackTimer => callbackTimer !== timer);
+	                callback(item);
 	            }, totalDuration);
+	            this.callbackTimers.push(timer);
 	        }
 	    }
 	    /**
-	     * Parses a duration string and converts it to a number.
-	     * The method supports strings ending in 'ms' (milliseconds) or 's' (seconds).
-	     * If the string ends in 'ms', the numeric value is returned as-is.
-	     * If the string ends in 's', the numeric value is returned after removing the 's' suffix.
+	     * Parses a CSS time value and converts it to milliseconds.
+	     * Values ending in 'ms' are returned as-is, values ending in 's' are multiplied by 1000.
+	     * When a list of values is given (e.g. "1s, 2s") only the first one is used.
 	     * If the input is invalid or empty, the method returns 0.
 	     *
-	     * @param {string} duration - The duration string to parse. It should contain a number followed by 'ms' or 's'.
-	     * @return {number} The numeric value of the duration, interpreted as milliseconds if 'ms' is present, or as an integer value otherwise.
+	     * @param {string} duration - The duration string to parse, e.g. "500ms" or "0.5s".
+	     * @return {number} The duration in milliseconds.
 	     */
 	    parseDuration(duration) {
-	        if (!duration)
+	        const value = (duration || '').split(',')[0].trim().toLowerCase();
+	        const amount = parseFloat(value);
+	        if (isNaN(amount))
 	            return 0;
-	        if (duration.indexOf('ms') > -1) {
-	            return parseInt(duration.replace('ms', ''));
-	        }
-	        let intDuration = parseInt(duration.replace('s', ''));
-	        return intDuration;
+	        if (value.slice(-2) === 'ms')
+	            return amount;
+	        if (value.slice(-1) === 's')
+	            return amount * 1000;
+	        return amount;
 	    }
 	    /**
-	     * Observes mutations in the DOM to detect added nodes that match specified criteria.
-	     * If a newly added node matches the required class, it resets the item and observes it
-	     * using an IntersectionObserver if supported by the browser.
+	     * Observes mutations in the DOM to detect added nodes (and their descendants) that match `boxClass`,
+	     * and the `data-vanimation-reload` attribute set to "true" to animate an item again.
 	     *
 	     * @return {void} Does not return any value.
 	     */
 	    observeItemMutation() {
-	        let observer = new MutationObserver(mutations => {
+	        if (!this.container)
+	            return;
+	        this.mutationObserver = new MutationObserver(mutations => {
 	            for (let mutation of mutations) {
-	                for (let node of mutation.addedNodes) {
-	                    if (!(node instanceof HTMLElement))
-	                        continue;
-	                    if (node.classList.contains('vanimation') || node.hasAttribute('data-vanimation')) {
-	                        this.resetItem(node);
-	                        if ("IntersectionObserver" in window) {
-	                            let itemObserver = this.intertsectionObserve();
-	                            itemObserver.observe(node);
+	                if (mutation.type === 'childList') {
+	                    for (let node of mutation.addedNodes) {
+	                        if (!(node instanceof HTMLElement))
+	                            continue;
+	                        if (node.matches(this.settings.boxClass)) {
+	                            this.watchItem(node);
 	                        }
+	                        node.querySelectorAll(this.settings.boxClass).forEach(item => {
+	                            this.watchItem(item);
+	                        });
 	                    }
 	                }
-	                if (mutation.type === 'attributes') {
-	                    const changedAttrName = mutation.attributeName;
-	                    if (changedAttrName) {
-	                        let node = mutation.target;
-	                        const newValue = node.getAttribute(changedAttrName);
-	                        if (changedAttrName == 'data-vanimation-reload' && newValue == 'true') {
-	                            this.resetItem(node);
-	                            if ("IntersectionObserver" in window) {
-	                                let itemObserver = this.intertsectionObserve();
-	                                itemObserver.observe(node);
-	                            }
-	                        }
+	                else if (mutation.type === 'attributes' && mutation.target instanceof HTMLElement) {
+	                    if (mutation.target.getAttribute('data-vanimation-reload') === 'true') {
+	                        this.watchItem(mutation.target);
 	                    }
 	                }
 	            }
 	        });
-	        observer.observe(this.container, { childList: true, attributes: true, subtree: true, });
+	        this.mutationObserver.observe(this.container, {
+	            childList: true,
+	            subtree: true,
+	            attributes: true,
+	            attributeFilter: ['data-vanimation-reload']
+	        });
 	    }
 	    /**
 	     * Determines whether the given user agent string corresponds to a mobile device.
@@ -238,22 +279,44 @@
 	        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(agent);
 	    }
 	    /**
-	     * Checks if the given HTML element is visible within the visible area of the container,
-	     * considering a specific offset.
+	     * Checks if the given HTML element is inside the viewport, considering a specific offset
+	     * from the bottom of the viewport.
 	     *
 	     * @param {HTMLElement} item - The HTML element to check visibility for.
 	     * @return {boolean} Returns true if the element is visible, false otherwise.
 	     */
 	    isVisible(item) {
-	        const offset = item.dataset.vanimationOffset ? parseInt(item.dataset.vanimationOffset) : this.settings.offset;
-	        const viewTop = this.container.scrollTop;
-	        const viewBottom = viewTop + Math.min(document.documentElement.clientHeight, window.innerHeight) - offset;
-	        const top = item.getBoundingClientRect().top;
-	        const bottom = top + item.clientHeight;
-	        let returnValue = top <= viewBottom && bottom >= viewTop;
-	        if (top < 0)
-	            returnValue = true;
-	        return returnValue;
+	        const viewBottom = Math.min(document.documentElement.clientHeight, window.innerHeight) - this.getOffset(item);
+	        const rect = item.getBoundingClientRect();
+	        // items above the top of the viewport (already scrolled past) are always animated
+	        return rect.top < 0 || (rect.top <= viewBottom && rect.bottom >= 0);
+	    }
+	    /**
+	     * Returns the offset of the given item: `data-vanimation-offset` if valid, otherwise the `offset` setting.
+	     *
+	     * @param {HTMLElement} item - The HTML element.
+	     * @return {number} The offset in pixels.
+	     */
+	    getOffset(item) {
+	        const offset = parseInt(item.dataset.vanimationOffset || '', 10);
+	        return isNaN(offset) ? this.settings.offset : offset;
+	    }
+	    /**
+	     * Returns the current vertical scroll position of the scroll target (window or scroll container).
+	     *
+	     * @return {number} The scroll position in pixels.
+	     */
+	    getScrollY() {
+	        return this.scrollTarget === window ? window.scrollY : this.scrollTarget.scrollTop;
+	    }
+	    /**
+	     * Splits a class attribute value into the single class names (`classList` throws on spaces or empty tokens).
+	     *
+	     * @param {string} value - The class names separated by white spaces.
+	     * @return {string[]} The class names.
+	     */
+	    splitClasses(value) {
+	        return (value || '').split(/\s+/).filter(Boolean);
 	    }
 	}
 

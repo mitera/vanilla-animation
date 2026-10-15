@@ -29,9 +29,11 @@ See the [vanilla-animation.js demo](https://codepen.io/mitera/pen/azOdmrv).
 
 CDN via jsDelivr
 
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-animation@latest/dist/vanilla-animation.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-animation@1.1.0/dist/vanilla-animation.min.js" type="text/javascript"></script>
 
-Download [vanilla-animation.js](https://github.com/mitera/vanilla-animation/blob/master/vanilla-animation.js) and include the script in your HTML file:
+Pin an exact version (not `@latest`) in production, so that a new release cannot change your pages without notice.
+
+Download [vanilla-animation.min.js](https://github.com/mitera/vanilla-animation/blob/main/dist/vanilla-animation.min.js) and include the script in your HTML file:
 
 	<script src="vanilla-animation.js" type="text/javascript"></script>
 
@@ -102,7 +104,7 @@ Where:
 - `offset` is the offset in pixels from the bottom of the viewport when the animation should start
 - `mobile` is `true` or `false` to enable mobile detection
 - `live` is `true` or `false` to enable live detection
-- `scrollContainer` is an optional element to use instead of the window
+- `scrollContainer` is an optional CSS selector of the scrolling element to use instead of the window
 - `callback` is a callback function that is called when the animation is completed
   ```
     new VanillaAnimation({
@@ -111,14 +113,24 @@ Where:
         }
     });
   ```
+You can pass only the options you want to change: the others keep their default value.
+
+### Methods
+
+- `destroy()` stops observing the items and removes the listeners and the pending callbacks (e.g. when a single page application removes the page)
+  ```
+    const animation = new VanillaAnimation();
+    animation.destroy();
+  ```
+
 ### Data API
 
-- `data-vanimation="animate__fadeIn"` is the animation class name
+- `data-vanimation="animate__fadeIn"` is the animation class name (more classes separated by spaces are allowed, e.g. `animate__fadeIn animate__slow`)
 - `data-vanimation-offset="200"` is the offset in pixels from the bottom of the viewport when the animation should start
 - `data-vanimation-delay="0.5s"` is animation delay time is seconds or milliseconds
 - `data-vanimation-duration="500ms"` is animation duration time is seconds or milliseconds
 - `data-vanimation-iteration="5"` is the animation iteration count
-- `data-vanimation-reload="true"` set to true to reload the animation on scroll
+- `data-vanimation-reload="true"` set to true to reload the animation: the item is hidden and animated again when it enters the viewport
 
 ### Known limitations
 

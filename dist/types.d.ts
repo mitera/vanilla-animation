@@ -6,6 +6,6 @@ interface VanillaAnimationSettings {
     mobile: boolean;
     live: boolean;
     scrollContainer: string | null;
-    callback: any;
+    callback: ((item: HTMLElement) => void) | null;
 }
 export { VanillaAnimationSettings };

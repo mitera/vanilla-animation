@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1">
     <title>Vanilla animation</title>
     <meta charset="utf-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+            integrity="sha384-Gu3KVV2H9d+yA4QDpVB7VcOyhJlAVrcXd0thEjr4KznfaFPLe0xQJyonVxONa4ZC"
+            crossorigin="anonymous"
     />
     <style>
         .rounded-circle {
@@ -117,11 +119,42 @@
             vanimation
         </div>
     </div>
+
+    <div class="my-5 d-flex gap-2">
+        <button type="button" class="btn btn-primary" id="add-items">Add items (live)</button>
+        <button type="button" class="btn btn-secondary" id="reload-items">Reload all (data-vanimation-reload)</button>
+    </div>
+    <div class="row" id="dynamic-items"></div>
 </div>
 
 <script src="../dist/vanilla-animation.min.js"></script>
 <script>
-    new VanillaAnimation();
+    new VanillaAnimation({
+        callback: function (el) {
+            console.log('animation completed', el);
+        }
+    });
+
+    // live detection: wrappers with nested items are detected as well
+    document.getElementById('add-items').addEventListener('click', function () {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'col-12 row';
+        ['added', 'dynamically'].forEach(function (text) {
+            const item = document.createElement('div');
+            item.className = 'col-12 col-md-6 rounded-circle';
+            item.dataset.vanimation = 'animate__zoomIn animate__fast';
+            item.textContent = text;
+            wrapper.appendChild(item);
+        });
+        document.getElementById('dynamic-items').appendChild(wrapper);
+    });
+
+    document.getElementById('reload-items').addEventListener('click', function () {
+        document.querySelectorAll('.vanimation, [data-vanimation]').forEach(function (item) {
+            item.setAttribute('data-vanimation-reload', 'false');
+            item.setAttribute('data-vanimation-reload', 'true');
+        });
+    });
 </script>
 </body>
 </html>

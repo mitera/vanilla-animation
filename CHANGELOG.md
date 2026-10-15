@@ -1,3 +1,22 @@
+<a name="1.1.0"></a>
+# 1.1.0 (2026-10-15)
+
+### release summary
+
+- Fix the callback timing: the delay was ignored (the duration was added twice), seconds were truncated (`0.5s` → 0 ms) and the iteration count was not considered.
+- Fix `data-vanimation` with more than one class (e.g. `animate__fadeIn animate__slow`): `classList` threw an error and the item stayed hidden.
+- Fix `data-vanimation-reload`: the item was hidden again but never animated, because the animation classes were not removed.
+- Fix items with the `animateClass` (e.g. `animate__animated`) already set in the HTML: they stayed hidden forever.
+- Fix items waiting for their offset: with more than one item, scrolling animated only part of them.
+- Fix the initialization when the script is loaded in `<head>`: the items are now collected on `DOMContentLoaded`.
+- Fix `scrollContainer`: the scroll is now read from the container instead of the window.
+- Fix the class `none` added to items without animation.
+- Live detection uses `boxClass` and also finds the items nested in the added nodes; a single `IntersectionObserver` is shared by all the items and animated items are no longer observed; the `MutationObserver` only watches `data-vanimation-reload`.
+- Without `IntersectionObserver` the items are no longer hidden forever.
+- Add `destroy()` to remove observers, listeners and pending callbacks.
+- TypeScript: the constructor accepts a partial settings object, `callback` is typed and `VanillaAnimationSettings` is exported.
+- Publish only `dist` on npm; remove the unused `esbuild` dev dependency.
+
 <a name="1.0.8"></a>
 # 1.0.8 (2026-02-10)
 

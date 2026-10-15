@@ -1,32 +1,49 @@
 import { VanillaAnimationSettings } from "./types";
+export type { VanillaAnimationSettings };
 export default class VanillaAnimation {
-    private items;
     private offsetItems;
     private settings;
     private container;
-    constructor(settings?: VanillaAnimationSettings);
+    private scrollTarget;
+    private itemObserver;
+    private mutationObserver;
+    private callbackTimers;
+    private readonly onReady;
+    private readonly onScroll;
+    constructor(settings?: Partial<VanillaAnimationSettings>);
     /**
-     * Initializes the scroll event listener to trigger animations on elements.
-     * This method sets up an event listener on the window object to monitor the scroll position
-     * and evaluates each element in the `offsetItems` array. If the scroll position meets
-     * the specified offset condition, the element's animation is triggered, and it is removed
-     * from the `offsetItems` array to prevent repeat processing.
+     * Stops observing the items and removes every listener and pending callback.
+     * Items that have not been animated yet keep their current state.
      *
      * @return {void} This method does not return a value.
      */
-    private initScrollEvent;
+    destroy(): void;
     /**
-     * Resets all items to their initial state by iterating through the list
-     * of items and calling the resetItem method on each one.
+     * Collects the items inside the container, hides them and starts observing them,
+     * the DOM mutations (if `live` is enabled) and the scroll position.
      *
-     * @return {void} Does not return any value.
+     * @return {void} This method does not return a value.
      */
-    protected resetItems(): void;
+    private init;
     /**
-     * Resets the given item's visibility and animation classes.
+     * Resets the given item and (re)starts observing it.
+     *
+     * @param {HTMLElement} item - The element to animate when it enters the viewport.
+     * @return {void} This method does not return a value.
+     */
+    protected watchItem(item: HTMLElement): void;
+    /**
+     * Evaluates the items waiting for their offset: when the scroll position goes beyond
+     * the stored position plus the offset, the item is animated and removed from the list.
+     *
+     * @return {void} This method does not return a value.
+     */
+    private handleScroll;
+    /**
+     * Resets the given item's visibility and animation classes, so that it can be animated (again).
      *
      * @param {HTMLElement} item - The HTML element to be reset. This element's visibility will be set to 'hidden',
-     *                              and if it has an animation applied, the animation classes will be modified or removed.
+     *                              and the classes added by a previous animation are removed.
      * @return {void} This method does not return a value.
      */
     protected resetItem(item: HTMLElement): void;
@@ -38,7 +55,7 @@ export default class VanillaAnimation {
      * @protected
      * @return {IntersectionObserver} The created IntersectionObserver instance that is configured with the behavior to handle intersection events.
      */
-    protected intertsectionObserve(): IntersectionObserver;
+    protected intersectionObserve(): IntersectionObserver;
     /**
      * Triggers an animation on the given HTML element by applying relevant CSS classes and styles.
      *
@@ -48,20 +65,18 @@ export default class VanillaAnimation {
      */
     private doAnimation;
     /**
-     * Parses a duration string and converts it to a number.
-     * The method supports strings ending in 'ms' (milliseconds) or 's' (seconds).
-     * If the string ends in 'ms', the numeric value is returned as-is.
-     * If the string ends in 's', the numeric value is returned after removing the 's' suffix.
+     * Parses a CSS time value and converts it to milliseconds.
+     * Values ending in 'ms' are returned as-is, values ending in 's' are multiplied by 1000.
+     * When a list of values is given (e.g. "1s, 2s") only the first one is used.
      * If the input is invalid or empty, the method returns 0.
      *
-     * @param {string} duration - The duration string to parse. It should contain a number followed by 'ms' or 's'.
-     * @return {number} The numeric value of the duration, interpreted as milliseconds if 'ms' is present, or as an integer value otherwise.
+     * @param {string} duration - The duration string to parse, e.g. "500ms" or "0.5s".
+     * @return {number} The duration in milliseconds.
      */
     protected parseDuration(duration: string): number;
     /**
-     * Observes mutations in the DOM to detect added nodes that match specified criteria.
-     * If a newly added node matches the required class, it resets the item and observes it
-     * using an IntersectionObserver if supported by the browser.
+     * Observes mutations in the DOM to detect added nodes (and their descendants) that match `boxClass`,
+     * and the `data-vanimation-reload` attribute set to "true" to animate an item again.
      *
      * @return {void} Does not return any value.
      */
@@ -74,11 +89,31 @@ export default class VanillaAnimation {
      */
     protected isMobile(agent: string): boolean;
     /**
-     * Checks if the given HTML element is visible within the visible area of the container,
-     * considering a specific offset.
+     * Checks if the given HTML element is inside the viewport, considering a specific offset
+     * from the bottom of the viewport.
      *
      * @param {HTMLElement} item - The HTML element to check visibility for.
      * @return {boolean} Returns true if the element is visible, false otherwise.
      */
     protected isVisible(item: HTMLElement): boolean;
+    /**
+     * Returns the offset of the given item: `data-vanimation-offset` if valid, otherwise the `offset` setting.
+     *
+     * @param {HTMLElement} item - The HTML element.
+     * @return {number} The offset in pixels.
+     */
+    protected getOffset(item: HTMLElement): number;
+    /**
+     * Returns the current vertical scroll position of the scroll target (window or scroll container).
+     *
+     * @return {number} The scroll position in pixels.
+     */
+    protected getScrollY(): number;
+    /**
+     * Splits a class attribute value into the single class names (`classList` throws on spaces or empty tokens).
+     *
+     * @param {string} value - The class names separated by white spaces.
+     * @return {string[]} The class names.
+     */
+    private splitClasses;
 }
