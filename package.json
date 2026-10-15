@@ -29,7 +29,8 @@
   },
   "scripts": {
     "dev": "rollup --config --watch",
-    "build": "rollup --config && terser dist/vanilla-animation.js -o dist/vanilla-animation.min.js"
+    "build": "rollup --config && terser dist/vanilla-animation.js -o dist/vanilla-animation.min.js",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.5",
