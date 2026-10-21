@@ -108,7 +108,7 @@ Where:
 - `mobile` is `false` to disable the animations on mobile devices (the items are shown without animation)
 - `live` is `true` to detect the items added to the page later and the `data-vanimation-reload` attribute
 - `scrollContainer` is an optional CSS selector of the scrolling element to use instead of the window
-- `callback` is a function called with the item when its animation is completed (delay + duration × iterations; an infinite animation counts as one iteration)
+- `callback` is a function called with the item when its animation is completed (delay + duration × iterations; an infinite animation counts as one iteration); when an item is reloaded before its animation is completed, the pending callback is cancelled and the callback is called only at the end of the new animation
   ```
     new VanillaAnimation({
         callback: function(el) {
@@ -135,7 +135,7 @@ The attributes below use the default `name` (`vanimation`): with `name: 'wow'` t
 - `data-vanimation-delay="0.5s"` is the animation delay, in seconds (`s`) or milliseconds (`ms`)
 - `data-vanimation-duration="500ms"` is the animation duration, in seconds (`s`) or milliseconds (`ms`)
 - `data-vanimation-iteration="5"` is the animation iteration count
-- `data-vanimation-reload="true"` replays the animation: the item is hidden and animated again when it enters the viewport (requires `live: true`; set the attribute again to replay it once more)
+- `data-vanimation-reload="true"` replays the animation: the item is hidden and animated again when it enters the viewport (requires `live: true`; set the attribute again to replay it once more); if the previous animation is not completed yet, its pending `callback` is cancelled
 
 ### Migrating from WOW
 
@@ -201,7 +201,7 @@ Do not mix them: `animate.min.css` of animate.css 4 does not define `animated` a
 | `live` | `live` | same meaning |
 | `scrollContainer` | `scrollContainer` | same meaning |
 | `callback` | `callback` | called with the item when its animation is completed |
-| `resetAnimation` | — | not available |
+| `resetAnimation` | — | not available: WOW removes `animateClass` at the end of the animation (`animationend`), while vanilla-animation keeps it. To remove it, use `callback: item => item.classList.remove('animated')`. This is unrelated to `data-wow-reload`, which replays the animation |
 | `wow.sync()` | — | not needed: with `live: true` the added items are detected automatically |
 
 #### 5. The HTML stays the same

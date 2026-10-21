@@ -17,7 +17,8 @@
 	        this.scrollTarget = window;
 	        this.itemObserver = null;
 	        this.mutationObserver = null;
-	        this.callbackTimers = [];
+	        // pending callback timer of each animated item
+	        this.callbackTimers = new Map();
 	        // the name drives the default box selector and the data attributes (e.g. 'wow' for data-wow-*)
 	        const name = (settings === null || settings === void 0 ? void 0 : settings.name) || 'vanimation';
 	        let default_settings = {
@@ -65,7 +66,7 @@
 	            this.mutationObserver = null;
 	        }
 	        this.callbackTimers.forEach(timer => window.clearTimeout(timer));
-	        this.callbackTimers = [];
+	        this.callbackTimers.clear();
 	        this.offsetItems = [];
 	    }
 	    /**
@@ -148,6 +149,20 @@
 	        item.classList.remove(this.settings.animateClass);
 	        item.removeAttribute(this.dataAttribute('scrolly'));
 	        this.offsetItems = this.offsetItems.filter(offsetItem => offsetItem !== item);
+	        this.clearCallbackTimer(item);
+	    }
+	    /**
+	     * Cancels the pending callback of the given item (e.g. when it is reloaded before its animation is completed).
+	     *
+	     * @param {HTMLElement} item - The HTML element.
+	     * @return {void} This method does not return a value.
+	     */
+	    clearCallbackTimer(item) {
+	        const timer = this.callbackTimers.get(item);
+	        if (timer !== undefined) {
+	            window.clearTimeout(timer);
+	            this.callbackTimers.delete(item);
+	        }
 	    }
 	    /**
 	     * Creates and returns an IntersectionObserver instance that observes elements for intersection events.
@@ -209,11 +224,11 @@
 	                iterationCount = 1;
 	            }
 	            let totalDuration = this.parseDuration(delay) + this.parseDuration(duration) * iterationCount;
-	            const timer = window.setTimeout(() => {
-	                this.callbackTimers = this.callbackTimers.filter(callbackTimer => callbackTimer !== timer);
+	            this.clearCallbackTimer(item);
+	            this.callbackTimers.set(item, window.setTimeout(() => {
+	                this.callbackTimers.delete(item);
 	                callback(item);
-	            }, totalDuration);
-	            this.callbackTimers.push(timer);
+	            }, totalDuration));
 	        }
 	    }
 	    /**

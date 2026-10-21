@@ -1,3 +1,10 @@
+<a name="unreleased"></a>
+# Unreleased
+
+### release summary
+
+- Fix `data-vanimation-reload` during an animation: the pending `callback` of the previous animation is cancelled, so the callback is called only once, at the end of the new animation (before, it was also called while the item was hidden and waiting to be animated again).
+
 <a name="1.2.0"></a>
 # 1.2.0 (2026-10-21)
 

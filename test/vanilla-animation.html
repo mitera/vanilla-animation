@@ -124,13 +124,20 @@
         <button type="button" class="btn btn-primary" id="add-items">Add items (live)</button>
         <button type="button" class="btn btn-secondary" id="reload-items">Reload all (data-vanimation-reload)</button>
     </div>
+    <p class="my-3">
+        Completed callbacks: <strong id="callback-count">0</strong>
+        <small class="text-muted">(reload during an animation: the pending callback is cancelled, so each item is counted only at the end of its new animation)</small>
+    </p>
     <div class="row" id="dynamic-items"></div>
 </div>
 
 <script src="../dist/vanilla-animation.min.js"></script>
 <script>
+    let callbackCount = 0;
     new VanillaAnimation({
         callback: function (el) {
+            callbackCount++;
+            document.getElementById('callback-count').textContent = callbackCount;
             console.log('animation completed', el);
         }
     });
@@ -151,7 +158,6 @@
 
     document.getElementById('reload-items').addEventListener('click', function () {
         document.querySelectorAll('.vanimation, [data-vanimation]').forEach(function (item) {
-            item.setAttribute('data-vanimation-reload', 'false');
             item.setAttribute('data-vanimation-reload', 'true');
         });
     });

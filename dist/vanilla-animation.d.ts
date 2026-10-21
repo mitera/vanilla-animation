@@ -48,6 +48,13 @@ export default class VanillaAnimation {
      */
     protected resetItem(item: HTMLElement): void;
     /**
+     * Cancels the pending callback of the given item (e.g. when it is reloaded before its animation is completed).
+     *
+     * @param {HTMLElement} item - The HTML element.
+     * @return {void} This method does not return a value.
+     */
+    private clearCallbackTimer;
+    /**
      * Creates and returns an IntersectionObserver instance that observes elements for intersection events.
      * The observer assesses if elements come into view and triggers the appropriate actions such as storing
      * elements for later animation or initiating animations for visible elements.
