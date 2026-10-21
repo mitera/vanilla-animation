@@ -141,15 +141,46 @@ The attributes below use the default `name` (`vanimation`): with `name: 'wow'` t
 
 With the `name` option you can replace [WOW](https://github.com/graingert/WOW) without changing the HTML: the items are found by the `wow` class and the `data-wow-*` attributes are read.
 
-    <div class="wow animate__fadeInUp" data-wow-delay="0.5s" data-wow-duration="1s" data-wow-offset="100" data-wow-iteration="2">
-        test
-    </div>
+#### 1. Replace the script
+
+Remove the WOW script (`wow.min.js`, or the `wowjs` / `wow.js` npm package) and add vanilla-animation:
+
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-animation@1.2.0/dist/vanilla-animation.min.js" type="text/javascript"></script>
+
+or, with npm:
+
+    npm uninstall wowjs
+    npm install vanilla-animation
+
+#### 2. Replace the initialization
+
+Before:
+
+    <script>
+        new WOW().init();
+    </script>
+
+After:
 
     <script>
         new VanillaAnimation({ name: 'wow' });
     </script>
 
-With animate.css 3 (or `animate.compat.css` of animate.css 4), where the classes have no prefix (`wow fadeInUp`), also set the prefix and the animate class:
+There is no `init()` to call: the constructor starts the animations (on `DOMContentLoaded` if the page is still loading).
+
+#### 3. Match the animate.css version
+
+The options depend on the animation classes used in the HTML, and the stylesheet must define the same classes.
+
+If the classes have the `animate__` prefix (`class="wow animate__fadeInUp"`), load animate.css 4 and keep the default prefix and animate class:
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    new VanillaAnimation({ name: 'wow' });
+
+If the classes have no prefix (`class="wow fadeInUp"`, as with WOW and animate.css 3), load animate.css 3 or the `animate.compat.css` of animate.css 4, which defines the classes without the prefix, and set the prefix and the animate class:
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.compat.css" />
 
     new VanillaAnimation({
         name: 'wow',
@@ -157,7 +188,31 @@ With animate.css 3 (or `animate.compat.css` of animate.css 4), where the classes
         animateClass: 'animated'
     });
 
-Unlike WOW, `boxClass` is a CSS selector (`.wow`), not a class name (`wow`), and there is no `init()` to call: the constructor starts the animations.
+Do not mix them: `animate.min.css` of animate.css 4 does not define `animated` and `fadeInUp`, and with `animatePrefix: ''` the `animate__` classes are not removed while the item is waiting, so the animation does not start on scroll.
+
+#### 4. Convert the WOW options
+
+| WOW | vanilla-animation | Notes |
+|---|---|---|
+| `boxClass: 'wow'` | `name: 'wow'` | `name` also sets the `data-wow-*` attributes; `boxClass` is a CSS selector (`.wow`), not a class name |
+| `animateClass: 'animated'` | `animateClass` | `animate__animated` by default (animate.css 4) |
+| `offset` | `offset` | same meaning |
+| `mobile` | `mobile` | same meaning |
+| `live` | `live` | same meaning |
+| `scrollContainer` | `scrollContainer` | same meaning |
+| `callback` | `callback` | called with the item when its animation is completed |
+| `resetAnimation` | — | not available |
+| `wow.sync()` | — | not needed: with `live: true` the added items are detected automatically |
+
+#### 5. The HTML stays the same
+
+The `data-wow-*` attributes work as before:
+
+    <div class="wow animate__fadeInUp" data-wow-delay="0.5s" data-wow-duration="1s" data-wow-offset="100" data-wow-iteration="2">
+        test
+    </div>
+
+and you can also use the vanilla-animation extras with the `wow` name, e.g. `data-wow="animate__fadeIn"` to set the animation on the attribute and `data-wow-reload="true"` to replay it.
 
 ### Known limitations
 
