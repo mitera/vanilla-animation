@@ -8,7 +8,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/vanilla-animation.svg?style=flat-square)](https://www.npmjs.com/package/vanilla-animation)
 [![yarn](https://img.shields.io/npm/v/vanilla-animation.svg?logo=yarn&logoColor=fff&label=yarn)](https://yarnpkg.com/package?name=vanilla-animation)
 
-[Demo](#demo) - [Features](#features) - [Install](#install) - [Usage](#usage) - [Options](#options) - [Methods](#methods) - [Data API](#data-api) -  [Changelog](#changelog) - [License](#license)
+[Demo](#demo) - [Features](#features) - [Install](#install) - [Usage](#usage) - [Options](#options) - [Methods](#methods) - [Data API](#data-api) - [Migrating from WOW](#migrating-from-wow) -  [Changelog](#changelog) - [License](#license)
 
 ## *Inspired by:* AOS and WOW
 
@@ -29,7 +29,7 @@ See the [vanilla-animation.js demo](https://codepen.io/mitera/pen/azOdmrv).
 
 CDN via jsDelivr
 
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-animation@1.1.0/dist/vanilla-animation.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-animation@1.2.0/dist/vanilla-animation.min.js" type="text/javascript"></script>
 
 Pin an exact version (not `@latest`) in production, so that a new release cannot change your pages without notice.
 
@@ -87,6 +87,7 @@ And adjust the behaviour with the `data-vanimation-*` attributes:
 The default `options` are:
 
     {
+        name: 'vanimation',
         boxClass: '.vanimation, [data-vanimation]',
         animatePrefix: 'animate__',
         animateClass: 'animate__animated',
@@ -99,6 +100,7 @@ The default `options` are:
 
 Where:
 
+- `name` is the name used for the data attributes (`data-{name}`, `data-{name}-delay`, …) and for the default `boxClass` (`.{name}, [data-{name}]`)
 - `boxClass` is the CSS selector of the items to animate (it must be a valid CSS selector)
 - `animatePrefix` is the prefix of the animation class, used when the animation is set on the `class` attribute instead of `data-vanimation` (e.g. `animate__` + `fadeIn`)
 - `animateClass` is the class added to start the animation (`animate__animated` for animate.css); it also marks the items already animated
@@ -126,12 +128,36 @@ You can pass only the options you want to change: the others keep their default 
 
 ### Data API
 
+The attributes below use the default `name` (`vanimation`): with `name: 'wow'` they become `data-wow-offset`, `data-wow-delay`, ….
+
 - `data-vanimation="animate__fadeIn"` is the animation class name (more classes separated by spaces are allowed, e.g. `animate__fadeIn animate__slow`)
 - `data-vanimation-offset="200"` is the offset in pixels for this item (it overrides the `offset` option)
 - `data-vanimation-delay="0.5s"` is the animation delay, in seconds (`s`) or milliseconds (`ms`)
 - `data-vanimation-duration="500ms"` is the animation duration, in seconds (`s`) or milliseconds (`ms`)
 - `data-vanimation-iteration="5"` is the animation iteration count
 - `data-vanimation-reload="true"` replays the animation: the item is hidden and animated again when it enters the viewport (requires `live: true`; set the attribute again to replay it once more)
+
+### Migrating from WOW
+
+With the `name` option you can replace [WOW](https://github.com/graingert/WOW) without changing the HTML: the items are found by the `wow` class and the `data-wow-*` attributes are read.
+
+    <div class="wow animate__fadeInUp" data-wow-delay="0.5s" data-wow-duration="1s" data-wow-offset="100" data-wow-iteration="2">
+        test
+    </div>
+
+    <script>
+        new VanillaAnimation({ name: 'wow' });
+    </script>
+
+With animate.css 3 (or `animate.compat.css` of animate.css 4), where the classes have no prefix (`wow fadeInUp`), also set the prefix and the animate class:
+
+    new VanillaAnimation({
+        name: 'wow',
+        animatePrefix: '',
+        animateClass: 'animated'
+    });
+
+Unlike WOW, `boxClass` is a CSS selector (`.wow`), not a class name (`wow`), and there is no `init()` to call: the constructor starts the animations.
 
 ### Known limitations
 

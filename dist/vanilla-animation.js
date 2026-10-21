@@ -1,6 +1,6 @@
 /*!
  * @author Simone Miterangelis <simone@mite.it>
- * vanilla-animation v1.1.0 by @mitera
+ * vanilla-animation v1.2.0 by @mitera
  * https://github.com/mitera/vanilla-animation
  * Released under the MIT License.
  */
@@ -18,8 +18,11 @@
 	        this.itemObserver = null;
 	        this.mutationObserver = null;
 	        this.callbackTimers = [];
+	        // the name drives the default box selector and the data attributes (e.g. 'wow' for data-wow-*)
+	        const name = (settings === null || settings === void 0 ? void 0 : settings.name) || 'vanimation';
 	        let default_settings = {
-	            boxClass: '.vanimation, [data-vanimation]',
+	            name: name,
+	            boxClass: `.${name}, [data-${name}]`,
 	            animatePrefix: 'animate__',
 	            animateClass: 'animate__animated',
 	            offset: 0,
@@ -28,7 +31,7 @@
 	            scrollContainer: null,
 	            callback: null
 	        };
-	        this.settings = Object.assign(Object.assign({}, default_settings), settings);
+	        this.settings = Object.assign(Object.assign(Object.assign({}, default_settings), settings), { name: name });
 	        this.onReady = this.init.bind(this);
 	        this.onScroll = this.handleScroll.bind(this);
 	        let disabled = !this.settings.mobile && this.isMobile(navigator.userAgent);
@@ -112,11 +115,11 @@
 	    handleScroll() {
 	        const scrollY = this.getScrollY();
 	        this.offsetItems = this.offsetItems.filter(item => {
-	            const startY = parseInt(item.dataset.vanimationScrolly || '', 10);
+	            const startY = parseInt(this.getData(item, 'scrolly') || '', 10);
 	            if (isNaN(startY) || startY + this.getOffset(item) >= scrollY) {
 	                return true;
 	            }
-	            item.removeAttribute('data-vanimation-scrolly');
+	            item.removeAttribute(this.dataAttribute('scrolly'));
 	            this.doAnimation(item);
 	            return false;
 	        });
@@ -130,19 +133,20 @@
 	     */
 	    resetItem(item) {
 	        item.style.visibility = 'hidden';
-	        if (item.dataset.vanimation) {
-	            item.classList.remove(...this.splitClasses(item.dataset.vanimation));
+	        const animation = this.getData(item);
+	        if (animation) {
+	            item.classList.remove(...this.splitClasses(animation));
 	        }
 	        else {
 	            // only the first animation is taken when several are set (e.g. "fadeIn, pulse")
 	            let animationName = window.getComputedStyle(item).getPropertyValue('animation-name').split(',')[0].trim();
 	            if (animationName && animationName != 'none') {
 	                item.classList.remove(this.settings.animatePrefix + animationName);
-	                item.dataset.vanimation = this.settings.animatePrefix + animationName;
+	                item.setAttribute(this.dataAttribute(), this.settings.animatePrefix + animationName);
 	            }
 	        }
 	        item.classList.remove(this.settings.animateClass);
-	        item.removeAttribute('data-vanimation-scrolly');
+	        item.removeAttribute(this.dataAttribute('scrolly'));
 	        this.offsetItems = this.offsetItems.filter(offsetItem => offsetItem !== item);
 	    }
 	    /**
@@ -165,7 +169,7 @@
 	                    this.doAnimation(item);
 	                }
 	                else {
-	                    item.dataset.vanimationScrolly = this.getScrollY() + '';
+	                    item.setAttribute(this.dataAttribute('scrolly'), this.getScrollY() + '');
 	                    this.offsetItems.push(item);
 	                }
 	            });
@@ -175,25 +179,25 @@
 	     * Triggers an animation on the given HTML element by applying relevant CSS classes and styles.
 	     *
 	     * @param {HTMLElement} item The element on which the animation should be performed.
-	     * The function reads dataset properties and computed styles to configure the animation.
+	     * The function reads the data attributes and computed styles to configure the animation.
 	     * @return {undefined} This method does not return any value.
 	     */
 	    doAnimation(item) {
 	        if (this.itemObserver) {
 	            this.itemObserver.unobserve(item);
 	        }
-	        item.classList.add(...this.splitClasses(item.dataset.vanimation), this.settings.animateClass);
+	        item.classList.add(...this.splitClasses(this.getData(item) || ''), this.settings.animateClass);
 	        item.style.visibility = 'visible';
 	        const computedStyle = window.getComputedStyle(item);
-	        let duration = item.dataset.vanimationDuration || computedStyle.getPropertyValue('animation-duration');
+	        let duration = this.getData(item, 'duration') || computedStyle.getPropertyValue('animation-duration');
 	        if (duration) {
 	            item.style.setProperty('animation-duration', duration);
 	        }
-	        let delay = item.dataset.vanimationDelay || computedStyle.getPropertyValue('animation-delay');
+	        let delay = this.getData(item, 'delay') || computedStyle.getPropertyValue('animation-delay');
 	        if (delay) {
 	            item.style.setProperty('animation-delay', delay);
 	        }
-	        let iteration = item.dataset.vanimationIteration || computedStyle.getPropertyValue('animation-iteration-count');
+	        let iteration = this.getData(item, 'iteration') || computedStyle.getPropertyValue('animation-iteration-count');
 	        if (iteration) {
 	            item.style.setProperty('animation-iteration-count', iteration);
 	        }
@@ -234,13 +238,14 @@
 	    }
 	    /**
 	     * Observes mutations in the DOM to detect added nodes (and their descendants) that match `boxClass`,
-	     * and the `data-vanimation-reload` attribute set to "true" to animate an item again.
+	     * and the `data-{name}-reload` attribute set to "true" to animate an item again.
 	     *
 	     * @return {void} Does not return any value.
 	     */
 	    observeItemMutation() {
 	        if (!this.container)
 	            return;
+	        const reloadAttribute = this.dataAttribute('reload');
 	        this.mutationObserver = new MutationObserver(mutations => {
 	            for (let mutation of mutations) {
 	                if (mutation.type === 'childList') {
@@ -256,7 +261,7 @@
 	                    }
 	                }
 	                else if (mutation.type === 'attributes' && mutation.target instanceof HTMLElement) {
-	                    if (mutation.target.getAttribute('data-vanimation-reload') === 'true') {
+	                    if (mutation.target.getAttribute(reloadAttribute) === 'true') {
 	                        this.watchItem(mutation.target);
 	                    }
 	                }
@@ -266,7 +271,7 @@
 	            childList: true,
 	            subtree: true,
 	            attributes: true,
-	            attributeFilter: ['data-vanimation-reload']
+	            attributeFilter: [reloadAttribute]
 	        });
 	    }
 	    /**
@@ -292,13 +297,13 @@
 	        return rect.top < 0 || (rect.top <= viewBottom && rect.bottom >= 0);
 	    }
 	    /**
-	     * Returns the offset of the given item: `data-vanimation-offset` if valid, otherwise the `offset` setting.
+	     * Returns the offset of the given item: `data-{name}-offset` if valid, otherwise the `offset` setting.
 	     *
 	     * @param {HTMLElement} item - The HTML element.
 	     * @return {number} The offset in pixels.
 	     */
 	    getOffset(item) {
-	        const offset = parseInt(item.dataset.vanimationOffset || '', 10);
+	        const offset = parseInt(this.getData(item, 'offset') || '', 10);
 	        return isNaN(offset) ? this.settings.offset : offset;
 	    }
 	    /**
@@ -308,6 +313,26 @@
 	     */
 	    getScrollY() {
 	        return this.scrollTarget === window ? window.scrollY : this.scrollTarget.scrollTop;
+	    }
+	    /**
+	     * Returns the name of a data attribute built on the `name` setting,
+	     * e.g. `data-vanimation` or `data-vanimation-delay` (`data-wow-delay` with `name: 'wow'`).
+	     *
+	     * @param {string} [suffix] - The attribute suffix (e.g. "delay"), omitted for the animation attribute.
+	     * @return {string} The attribute name.
+	     */
+	    dataAttribute(suffix) {
+	        return 'data-' + this.settings.name + (suffix ? '-' + suffix : '');
+	    }
+	    /**
+	     * Returns the value of a data attribute built on the `name` setting.
+	     *
+	     * @param {HTMLElement} item - The HTML element.
+	     * @param {string} [suffix] - The attribute suffix (e.g. "delay"), omitted for the animation attribute.
+	     * @return {string | null} The attribute value, or null if it is not set.
+	     */
+	    getData(item, suffix) {
+	        return item.getAttribute(this.dataAttribute(suffix));
 	    }
 	    /**
 	     * Splits a class attribute value into the single class names (`classList` throws on spaces or empty tokens).

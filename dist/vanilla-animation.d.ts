@@ -60,7 +60,7 @@ export default class VanillaAnimation {
      * Triggers an animation on the given HTML element by applying relevant CSS classes and styles.
      *
      * @param {HTMLElement} item The element on which the animation should be performed.
-     * The function reads dataset properties and computed styles to configure the animation.
+     * The function reads the data attributes and computed styles to configure the animation.
      * @return {undefined} This method does not return any value.
      */
     private doAnimation;
@@ -76,7 +76,7 @@ export default class VanillaAnimation {
     protected parseDuration(duration: string): number;
     /**
      * Observes mutations in the DOM to detect added nodes (and their descendants) that match `boxClass`,
-     * and the `data-vanimation-reload` attribute set to "true" to animate an item again.
+     * and the `data-{name}-reload` attribute set to "true" to animate an item again.
      *
      * @return {void} Does not return any value.
      */
@@ -97,7 +97,7 @@ export default class VanillaAnimation {
      */
     protected isVisible(item: HTMLElement): boolean;
     /**
-     * Returns the offset of the given item: `data-vanimation-offset` if valid, otherwise the `offset` setting.
+     * Returns the offset of the given item: `data-{name}-offset` if valid, otherwise the `offset` setting.
      *
      * @param {HTMLElement} item - The HTML element.
      * @return {number} The offset in pixels.
@@ -109,6 +109,22 @@ export default class VanillaAnimation {
      * @return {number} The scroll position in pixels.
      */
     protected getScrollY(): number;
+    /**
+     * Returns the name of a data attribute built on the `name` setting,
+     * e.g. `data-vanimation` or `data-vanimation-delay` (`data-wow-delay` with `name: 'wow'`).
+     *
+     * @param {string} [suffix] - The attribute suffix (e.g. "delay"), omitted for the animation attribute.
+     * @return {string} The attribute name.
+     */
+    protected dataAttribute(suffix?: string): string;
+    /**
+     * Returns the value of a data attribute built on the `name` setting.
+     *
+     * @param {HTMLElement} item - The HTML element.
+     * @param {string} [suffix] - The attribute suffix (e.g. "delay"), omitted for the animation attribute.
+     * @return {string | null} The attribute value, or null if it is not set.
+     */
+    protected getData(item: HTMLElement, suffix?: string): string | null;
     /**
      * Splits a class attribute value into the single class names (`classList` throws on spaces or empty tokens).
      *

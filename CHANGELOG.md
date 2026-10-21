@@ -1,3 +1,10 @@
+<a name="1.2.0"></a>
+# 1.2.0 (2026-10-21)
+
+### release summary
+
+- Add the `name` option (default `vanimation`): it sets the data attributes (`data-{name}`, `data-{name}-delay`, …) and the default `boxClass` (`.{name}, [data-{name}]`), e.g. `name: 'wow'` to migrate from WOW without changing the HTML.
+
 <a name="1.1.0"></a>
 # 1.1.0 (2026-10-15)
 

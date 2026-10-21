@@ -1,4 +1,5 @@
 interface VanillaAnimationSettings {
+    name: string;
     boxClass: string;
     animatePrefix: string;
     animateClass: string;
